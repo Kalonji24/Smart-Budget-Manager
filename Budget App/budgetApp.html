@@ -3,732 +3,462 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Budget Manager</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-color: #2563eb;
-            --primary-hover: #1d4ed8;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 30px 0;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-            color: white;
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .card-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .income-icon { background: rgba(16, 185, 129, 0.1); color: var(--success-color); }
-        .expense-icon { background: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
-        .budget-icon { background: rgba(37, 99, 235, 0.1); color: var(--primary-color); }
-        .savings-icon { background: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
-
-        .card-amount {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .income .card-amount { color: var(--success-color); }
-        .expense .card-amount { color: var(--danger-color); }
-        .budget .card-amount { color: var(--primary-color); }
-        .savings .card-amount { color: var(--warning-color); }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background-color: var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 12px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        .form-section {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text-primary);
-        }
-
-        .form-group input, .form-group select {
-            padding: 12px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-        }
-
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #dc2626;
-            transform: translateY(-1px);
-        }
-
-        .transactions {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-        }
-
-        .transactions h3 {
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
-        .transaction-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            margin-bottom: 12px;
-            transition: all 0.2s;
-        }
-
-        .transaction-item:hover {
-            background-color: var(--bg-primary);
-            transform: translateX(4px);
-        }
-
-        .transaction-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .transaction-type {
-            width: 8px;
-            height: 40px;
-            border-radius: 4px;
-        }
-
-        .transaction-type.income { background-color: var(--success-color); }
-        .transaction-type.expense { background-color: var(--danger-color); }
-
-        .transaction-details h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .transaction-meta {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        .transaction-amount {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .transaction-amount.income { color: var(--success-color); }
-        .transaction-amount.expense { color: var(--danger-color); }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        .delete-btn:hover {
-            background-color: var(--danger-color);
-            color: white;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-secondary);
-        }
-
-        .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            
-            .transaction-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-            
-            .transaction-amount {
-                align-self: flex-end;
-            }
-        }
-
-        .alert {
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-
-        .alert-warning {
-            background-color: rgba(245, 158, 11, 0.1);
-            color: #92400e;
-            border-left: 4px solid var(--warning-color);
-        }
-
-        .alert-danger {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: #991b1b;
-            border-left: 4px solid var(--danger-color);
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <title>FinTrack - Financial Dashboard</title>
+   
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>💰 Smart Budget Manager</h1>
-            <p>Take control of your finances and build better money habits</p>
-        </div>
-
-        <div class="dashboard">
-            <div class="card income">
-                <div class="card-header">
-                    <span class="card-title">Total Income</span>
-                    <div class="card-icon income-icon">💰</div>
-                </div>
-                <div class="card-amount" id="totalIncome">R0.00</div>
-                <div class="card-subtitle">This month</div>
-            </div>
-
-            <div class="card expense">
-                <div class="card-header">
-                    <span class="card-title">Total Expenses</span>
-                    <div class="card-icon expense-icon">💸</div>
-                </div>
-                <div class="card-amount" id="totalExpenses">R0.00</div>
-                <div class="card-subtitle">This month</div>
-            </div>
-
-            <div class="card budget">
-                <div class="card-header">
-                    <span class="card-title">Remaining Budget</span>
-                    <div class="card-icon budget-icon">📊</div>
-                </div>
-                <div class="card-amount" id="remainingBudget">R0.00</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="budgetProgress" style="background-color: var(--primary-color);"></div>
-                </div>
-            </div>
-
-            <div class="card savings">
-                <div class="card-header">
-                    <span class="card-title">Savings Goal</span>
-                    <div class="card-icon savings-icon">🎯</div>
-                </div>
-                <div class="card-amount" id="savingsProgress">R0.00</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="savingsBar" style="background-color: var(--warning-color);"></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="alertContainer"></div>
-
-        <div class="form-section">
-            <h3>💼 Set Monthly Budget & Savings Goal</h3>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="monthlyBudget">Monthly Budget</label>
-                    <input type="number" id="monthlyBudget" placeholder="Enter your monthly budget" min="0" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label for="savingsGoal">Savings Goal</label>
-                    <input type="number" id="savingsGoal" placeholder="Enter your savings goal" min="0" step="0.01">
-                </div>
-            </div>
-            <button class="btn btn-primary" onclick="setBudgetAndGoals()">
-                💾 Save Budget & Goals
-            </button>
-        </div>
-
-        <div class="form-section">
-            <h3>➕ Add New Transaction</h3>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="transactionType">Type</label>
-                    <select id="transactionType">
-                        <option value="income">💰 Income</option>
-                        <option value="expense">💸 Expense</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="transactionAmount">Amount</label>
-                    <input type="number" id="transactionAmount" placeholder="0.00" min="0" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="transactionDescription">Description</label>
-                    <input type="text" id="transactionDescription" placeholder="What was this for?" required>
-                </div>
-                <div class="form-group">
-                    <label for="transactionCategory">Category</label>
-                    <select id="transactionCategory">
-                        <option value="food">🍔 Food & Dining</option>
-                        <option value="transport">🚗 Transportation</option>
-                        <option value="shopping">🛍️ Shopping</option>
-                        <option value="bills">📋 Bills & Utilities</option>
-                        <option value="entertainment">🎬 Entertainment</option>
-                        <option value="health">🏥 Healthcare</option>
-                        <option value="salary">💼 Salary</option>
-                        <option value="freelance">💻 Freelance</option>
-                        <option value="investment">📈 Investment</option>
-                        <option value="other">📦 Other</option>
-                    </select>
-                </div>
-            </div>
-            <button class="btn btn-primary" onclick="addTransaction()">
-                ➕ Add Transaction
-            </button>
-        </div>
-
-        <div class="transactions">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3>📋 Recent Transactions</h3>
-                <button class="btn btn-danger" onclick="clearAllTransactions()">
-                    🗑️ Clear All
-                </button>
-            </div>
-            <div id="transactionsList">
-                <div class="empty-state">
-                    <div class="empty-state-icon">📝</div>
-                    <h4>No transactions yet</h4>
-                    <p>Add your first transaction to start tracking your budget!</p>
-                </div>
-            </div>
-        </div>
+    <!-- Burger Menu -->
+    <div class="burger-menu" id="burgerMenu">
+        <div class="burger-line"></div>
+        <div class="burger-line"></div>
+        <div class="burger-line"></div>
     </div>
 
-    <script>
-        // Application state
-        let appData = {
-            transactions: [],
-            monthlyBudget: 0,
-            savingsGoal: 0,
-            totalIncome: 0,
-            totalExpenses: 0
-        };
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
 
-        // Category emoji mapping
-        const categoryEmojis = {
-            food: '🍔',
-            transport: '🚗',
-            shopping: '🛍️',
-            bills: '📋',
-            entertainment: '🎬',
-            health: '🏥',
-            salary: '💼',
-            freelance: '💻',
-            investment: '📈',
-            other: '📦'
-        };
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <span class="logo-icon">💰</span>
+                <span>FinTrack</span>
+            </div>
 
-        // Initialize app
-        function initApp() {
-            loadData();
-            updateDashboard();
-            renderTransactions();
-        }
-
-        // Load data from memory (in a real app, this would be from localStorage or a database)
-        function loadData() {
-            // Data persists in memory during the session
-            updateTotals();
-        }
-
-        // Save budget and savings goals
-        function setBudgetAndGoals() {
-            const budget = parseFloat(document.getElementById('monthlyBudget').value) || 0;
-            const savings = parseFloat(document.getElementById('savingsGoal').value) || 0;
-            
-            if (budget < 0 || savings < 0) {
-                showAlert('Please enter positive values for budget and savings goal.', 'danger');
-                return;
-            }
-            
-            appData.monthlyBudget = budget;
-            appData.savingsGoal = savings;
-            
-            updateDashboard();
-            showAlert('Budget and savings goal updated successfully!', 'success');
-        }
-
-        // Add new transaction
-        function addTransaction() {
-            const type = document.getElementById('transactionType').value;
-            const amount = parseFloat(document.getElementById('transactionAmount').value);
-            const description = document.getElementById('transactionDescription').value.trim();
-            const category = document.getElementById('transactionCategory').value;
-            
-            if (!amount || amount <= 0) {
-                showAlert('Please enter a valid amount.', 'danger');
-                return;
-            }
-            
-            if (!description) {
-                showAlert('Please enter a description.', 'danger');
-                return;
-            }
-            
-            const transaction = {
-                id: Date.now(),
-                type: type,
-                amount: amount,
-                description: description,
-                category: category,
-                date: new Date().toLocaleDateString()
-            };
-            
-            appData.transactions.unshift(transaction);
-            updateTotals();
-            updateDashboard();
-            renderTransactions();
-            clearForm();
-            checkBudgetWarnings();
-            
-            showAlert(`${type === 'income' ? 'Income' : 'Expense'} of R${amount.toFixed(2)} added successfully!`, 'success');
-        }
-
-        // Update totals
-        function updateTotals() {
-            appData.totalIncome = appData.transactions
-                .filter(t => t.type === 'income')
-                .reduce((sum, t) => sum + t.amount, 0);
-                
-            appData.totalExpenses = appData.transactions
-                .filter(t => t.type === 'expense')
-                .reduce((sum, t) => sum + t.amount, 0);
-        }
-
-        // Update dashboard
-        function updateDashboard() {
-            document.getElementById('totalIncome').textContent = `R${appData.totalIncome.toFixed(2)}`;
-            document.getElementById('totalExpenses').textContent = `R${appData.totalExpenses.toFixed(2)}`;
-            
-            const remaining = appData.totalIncome - appData.totalExpenses;
-            document.getElementById('remainingBudget').textContent = `R${remaining.toFixed(2)}`;
-            
-            // Update budget progress
-            if (appData.monthlyBudget > 0) {
-                const budgetUsed = (appData.totalExpenses / appData.monthlyBudget) * 100;
-                document.getElementById('budgetProgress').style.width = `${Math.min(budgetUsed, 100)}%`;
-                
-                if (budgetUsed > 100) {
-                    document.getElementById('budgetProgress').style.backgroundColor = 'var(--danger-color)';
-                } else if (budgetUsed > 80) {
-                    document.getElementById('budgetProgress').style.backgroundColor = 'var(--warning-color)';
-                } else {
-                    document.getElementById('budgetProgress').style.backgroundColor = 'var(--primary-color)';
-                }
-            }
-            
-            // Update savings progress
-            const currentSavings = Math.max(0, remaining);
-            document.getElementById('savingsProgress').textContent = `R${currentSavings.toFixed(2)}`;
-            
-            if (appData.savingsGoal > 0) {
-                const savingsProgress = (currentSavings / appData.savingsGoal) * 100;
-                document.getElementById('savingsBar').style.width = `${Math.min(savingsProgress, 100)}%`;
-            }
-        }
-
-        // Render transactions
-        function renderTransactions() {
-            const container = document.getElementById('transactionsList');
-            
-            if (appData.transactions.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📝</div>
-                        <h4>No transactions yet</h4>
-                        <p>Add your first transaction to start tracking your budget!</p>
+            <div class="main-menu">
+                <div class="menu-section">
+                    <div class="menu-label">Main Menu</div>
+                    <div class="menu-item">
+                        <span class="menu-icon">📊</span>
+                        <span>Overview</span>
                     </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = appData.transactions.map(transaction => `
-                <div class="transaction-item">
-                    <div class="transaction-info">
-                        <div class="transaction-type ${transaction.type}"></div>
-                        <div class="transaction-details">
-                            <h4>${categoryEmojis[transaction.category]} ${transaction.description}</h4>
-                            <div class="transaction-meta">${transaction.category} • ${transaction.date}</div>
-                        </div>
+                    <div class="menu-item active">
+                        <span class="menu-icon">💳</span>
+                        <span>Card</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div class="transaction-amount ${transaction.type}">
-                            ${transaction.type === 'income' ? '+' : '-'}R${transaction.amount.toFixed(2)}
-                        </div>
-                        <button class="delete-btn" onclick="deleteTransaction(${transaction.id})" title="Delete transaction">
-                            🗑️
-                        </button>
+                    <div class="menu-item">
+                        <span class="menu-icon">💰</span>
+                        <span>Budget</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">💸</span>
+                        <span>Payment</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">📈</span>
+                        <span>Statistics</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">📄</span>
+                        <span>Report</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">👤</span>
+                        <span>Account</span>
                     </div>
                 </div>
-            `).join('');
-        }
 
-        // Delete transaction
-        function deleteTransaction(id) {
-            if (confirm('Are you sure you want to delete this transaction?')) {
-                appData.transactions = appData.transactions.filter(t => t.id !== id);
-                updateTotals();
-                updateDashboard();
-                renderTransactions();
-                showAlert('Transaction deleted successfully!', 'success');
-            }
-        }
-
-        // Clear all transactions
-        function clearAllTransactions() {
-            if (confirm('Are you sure you want to delete all transactions? This action cannot be undone.')) {
-                appData.transactions = [];
-                appData.totalIncome = 0;
-                appData.totalExpenses = 0;
-                updateDashboard();
-                renderTransactions();
-                clearAlerts();
-                showAlert('All transactions cleared successfully!', 'success');
-            }
-        }
-
-        // Clear form
-        function clearForm() {
-            document.getElementById('transactionAmount').value = '';
-            document.getElementById('transactionDescription').value = '';
-        }
-
-        // Check budget warnings
-        function checkBudgetWarnings() {
-            if (appData.monthlyBudget > 0) {
-                const budgetUsed = (appData.totalExpenses / appData.monthlyBudget) * 100;
-                
-                if (budgetUsed > 100) {
-                    showAlert(`⚠️ You've exceeded your monthly budget by R${(appData.totalExpenses - appData.monthlyBudget).toFixed(2)}!`, 'danger');
-                } else if (budgetUsed > 80) {
-                    showAlert(`⚠️ You've used ${budgetUsed.toFixed(1)}% of your monthly budget. Consider reducing expenses.`, 'warning');
-                }
-            }
-        }
-
-        // Show alert
-        function showAlert(message, type = 'success') {
-            const alertContainer = document.getElementById('alertContainer');
-            const alertId = Date.now();
-            
-            const alertClass = type === 'success' ? 'alert-success' : 
-                             type === 'warning' ? 'alert-warning' : 'alert-danger';
-            
-            const alertHtml = `
-                <div class="alert ${alertClass}" id="alert-${alertId}">
-                    ${message}
+                <div class="menu-section">
+                    <div class="menu-label">
+                        Financial Category
+                        <span class="add-button">+</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">💵</span>
+                        <span>Incomes</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">💸</span>
+                        <span>Debts</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">🎯</span>
+                        <span>Goals</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">📊</span>
+                        <span>Investments</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">🏦</span>
+                        <span>Assets</span>
+                    </div>
                 </div>
-            `;
-            
-            alertContainer.insertAdjacentHTML('afterbegin', alertHtml);
-            
-            // Auto-remove alert after 5 seconds
-            setTimeout(() => {
-                const alertElement = document.getElementById(`alert-${alertId}`);
-                if (alertElement) {
-                    alertElement.remove();
-                }
-            }, 5000);
-        }
+            </div>
 
-        // Clear all alerts
-        function clearAlerts() {
-            document.getElementById('alertContainer').innerHTML = '';
-        }
+            <div class="bottom-menu">
+                <div class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">❓</span>
+                    <span>Help Center</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">🚪</span>
+                    <span>Logout</span>
+                </div>
+            </div>
+        </aside>
 
-        // Initialize app when page loads
-        document.addEventListener('DOMContentLoaded', initApp);
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Header -->
+            <header class="header">
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Search for...">
+                </div>
+                <div class="header-right">
+                    <div class="theme-toggle">🌙</div>
+                    <div class="notification-icon">
+                        🔔
+                        <div class="notification-dot"></div>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-avatar"></div>
+                        <div class="user-name">Marvin McKinney</div>
+                    </div>
+                </div>
+            </header>
 
-        // Add Enter key support for forms
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const activeElement = document.activeElement;
-                if (activeElement.id === 'monthlyBudget' || activeElement.id === 'savingsGoal') {
-                    setBudgetAndGoals();
-                } else if (activeElement.id === 'transactionAmount' || 
-                          activeElement.id === 'transactionDescription') {
-                    addTransaction();
-                }
-            }
-        });
-    </script>
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Balance</div>
+                                <div class="stat-amount">R54,130.00</div>
+                                <div class="stat-change positive">↑ 12.2%</div>
+                            </div>
+                        </div>
+                        <svg class="mini-chart" viewBox="0 0 200 60">
+                            <polyline fill="none" stroke="#10b981" stroke-width="2" points="0,50 25,40 50,35 75,25 100,30 125,20 150,15 175,10 200,5"/>
+                        </svg>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Savings</div>
+                                <div class="stat-amount">R2,333.00</div>
+                                <div class="stat-change positive">↑ 9.9%</div>
+                            </div>
+                        </div>
+                        <div class="chart-bars">
+                            <div class="chart-bar" style="height: 40%;"></div>
+                            <div class="chart-bar" style="height: 60%;"></div>
+                            <div class="chart-bar active" style="height: 100%;"></div>
+                            <div class="chart-bar active" style="height: 70%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Income</div>
+                                <div class="stat-amount">R10,150.00</div>
+                                <div class="stat-change positive">↑ 2.8%</div>
+                            </div>
+                        </div>
+                        <svg class="mini-chart" viewBox="0 0 200 60">
+                            <polyline fill="none" stroke="#10b981" stroke-width="2" points="0,55 25,50 50,45 75,40 100,35 125,28 150,22 175,18 200,12"/>
+                        </svg>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Expenses</div>
+                                <div class="stat-amount">R7,817.00</div>
+                                <div class="stat-change negative">↓ 2.3%</div>
+                            </div>
+                            <div class="donut-chart">
+                                <div class="donut-center">77%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cards Section -->
+                <div class="cards-section">
+                    <div class="section-header">
+                        <h2 class="section-title">My cards</h2>
+                        <a href="#" class="view-all">---</a>
+                    </div>
+                    <div class="cards-container">
+                        <div class="credit-card">
+                            <div class="card-chip"></div>
+                            <div class="card-type">Credit</div>
+                            <div class="card-holder">Marvin McKinney</div>
+                            <div class="card-number">5242 - 4343 - 8348 - 4878</div>
+                            <div class="card-dots">
+                                <div class="dot active"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                        <div class="add-card">
+                            <div class="add-card-icon">+</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Section -->
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h2 class="section-title">Financial statistics</h2>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-dot income"></div>
+                                <span>Income</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot expenses"></div>
+                                <span>Expenses</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 40%;">
+                                    <div class="chart-tooltip">R2,400</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 30%;">
+                                    <div class="chart-tooltip">R1,800</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">Jan</div>
+                        </div>
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 50%;">
+                                    <div class="chart-tooltip">R3,000</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 35%;">
+                                    <div class="chart-tooltip">R2,100</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">Feb</div>
+                        </div>
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 65%;">
+                                    <div class="chart-tooltip">R3,900</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 45%;">
+                                    <div class="chart-tooltip">R2,700</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">Mar</div>
+                        </div>
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 55%;">
+                                    <div class="chart-tooltip">R3,300</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 90%;">
+                                    <div class="chart-tooltip">R5,400</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">Apr</div>
+                        </div>
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 100%;">
+                                    <div class="chart-tooltip">R6,000</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 60%;">
+                                    <div class="chart-tooltip">R3,600</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">May</div>
+                        </div>
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 70%;">
+                                    <div class="chart-tooltip">R4,200</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 50%;">
+                                    <div class="chart-tooltip">R3,000</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">Jun</div>
+                        </div>
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 80%;">
+                                    <div class="chart-tooltip">R4,800</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 55%;">
+                                    <div class="chart-tooltip">R3,300</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">Jul</div>
+                        </div>
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 75%;">
+                                    <div class="chart-tooltip">R4,500</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 48%;">
+                                    <div class="chart-tooltip">R2,880</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">Aug</div>
+                        </div>
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 60%;">
+                                    <div class="chart-tooltip">R3,600</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 40%;">
+                                    <div class="chart-tooltip">R2,400</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">Sep</div>
+                        </div>
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 50%;">
+                                    <div class="chart-tooltip">R3,000</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 35%;">
+                                    <div class="chart-tooltip">R2,100</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">Oct</div>
+                        </div>
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 45%;">
+                                    <div class="chart-tooltip">R2,700</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 32%;">
+                                    <div class="chart-tooltip">R1,920</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">Nov</div>
+                        </div>
+                        <div class="chart-group">
+                            <div class="chart-bars-group">
+                                <div class="chart-column" style="height: 55%;">
+                                    <div class="chart-tooltip">R3,300</div>
+                                </div>
+                                <div class="chart-column expenses" style="height: 38%;">
+                                    <div class="chart-tooltip">R2,280</div>
+                                </div>
+                            </div>
+                            <div class="chart-label">Dec</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Grid -->
+                <div class="bottom-grid">
+                    <!-- Recent Activities -->
+                    <div class="activities-section">
+                        <div class="activities-header">
+                            <h2 class="section-title">Recent activities</h2>
+                            <div class="month-label">Last month</div>
+                            <a href="#" class="view-all">View more</a>
+                        </div>
+                        <div class="activity-amount">R4,522.00 <span style="font-size: 14px; color: #666;">July 2023</span></div>
+                        <div class="activity-chart">
+                            <svg width="100%" height="100%" viewBox="0 0 400 100">
+                                <path d="M 0,80 Q 50,60 100,65 T 200,50 T 300,45 T 400,30" 
+                                      fill="none" 
+                                      stroke="#14b8a6" 
+                                      stroke-width="3"/>
+                                <path d="M 0,80 Q 50,60 100,65 T 200,50 T 300,45 T 400,30 L 400,100 L 0,100 Z" 
+                                      fill="url(#gradient)"/>
+                                <defs>
+                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:0.3" />
+                                        <stop offset="100%" style="stop-color:#14b8a6;stop-opacity:0" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Last Transactions -->
+                    <div class="transactions-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Last transaction</h2>
+                            <a href="#" class="view-all">View All</a>
+                        </div>
+
+                        <div class="transaction-item">
+                            <div class="transaction-icon">🏢</div>
+                            <div class="transaction-info">
+                                <div class="transaction-name">Squarespace</div>
+                                <div class="transaction-type">Payment</div>
+                            </div>
+                            <div>
+                                <div class="transaction-amount">R43.48</div>
+                                <div class="transaction-time">3h ago</div>
+                            </div>
+                        </div>
+
+                        <div class="transaction-item">
+                            <div class="transaction-icon">💳</div>
+                            <div class="transaction-info">
+                                <div class="transaction-name">PayPal</div>
+                                <div class="transaction-type">Received money</div>
+                            </div>
+                            <div>
+                                <div class="transaction-amount">R332.79</div>
+                                <div class="transaction-time">22min ago</div>
+                            </div>
+                        </div>
+
+                        <div class="transaction-item">
+                            <div class="transaction-icon">✈️</div>
+                            <div class="transaction-info">
+                                <div class="transaction-name">Floyd Miles</div>
+                                <div class="transaction-type">Send money</div>
+                            </div>
+                            <div>
+                                <div class="transaction-amount">R19.89</div>
+                                <div class="transaction-time">2d ago</div>
+                            </div>
+                        </div>
+
+                        <div class="transaction-item">
+                            <div class="transaction-icon">📦</div>
+                            <div class="transaction-info">
+                                <div class="transaction-name">Amazon</div>
+                                <div class="transaction-type">Payment</div>
+                            </div>
+                            <div>
+                                <div class="transaction-amount">R52.00</div>
+                                <div class="transaction-time">2wk ago</div>
+                            </div>
+                        </div>
+
+                        <div class="transaction-item">
+                            <div class="transaction-icon">👤</div>
+                            <div class="transaction-info">
+                                <div class="transaction-name">Jerome Bell</div>
+                                <div class="transaction-type">Payment</div>
+                            </div>
+                            <div>
+                                <div class="transaction-amount">R62.91</div>
+                                <div class="transaction-time">1mo ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="main.js"></script>
 </body>
 </html>
